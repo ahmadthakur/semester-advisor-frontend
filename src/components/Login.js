@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
+} from "@chakra-ui/react";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -34,33 +42,44 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Username:</label>
-        <input
-          type="text"
-          name="username"
-          autoComplete="username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          autoComplete="current-password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-
-        <button type="submit">Login</button>
-        <button type="button" onClick={() => navigate("/register")}>
-          Register
-        </button>
-      </form>
-    </div>
+    <Box bg="gray.50" minH="100vh" py={12} px={{ base: 4, lg: 8 }}>
+      <Box maxW="md" mx="auto">
+        <Box bg="white" py={8} px={4} shadow="lg" rounded={{ sm: "lg" }}>
+          <form onSubmit={handleSubmit}>
+            <VStack spacing={6}>
+              <FormControl id="username">
+                <FormLabel fontWeight="bold">Username</FormLabel>
+                <Input
+                  type="text"
+                  name="username"
+                  autoComplete="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                />
+              </FormControl>
+              <FormControl id="password">
+                <FormLabel fontWeight="bold">Password</FormLabel>
+                <Input
+                  type="password"
+                  name="password"
+                  autoComplete="current-password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </FormControl>
+              <Button type="submit" colorScheme="blue" size="lg" fontSize="md">
+                Login
+              </Button>
+            </VStack>
+          </form>
+        </Box>
+        <Box mt={6} textAlign="center">
+          <Button variant="link" onClick={() => navigate("/register")}>
+            Register
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

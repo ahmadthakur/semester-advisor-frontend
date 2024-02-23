@@ -1,9 +1,19 @@
-// src/components/ViewRecommendations.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {
+  Box,
+  Heading,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  VStack,
+} from "@chakra-ui/react";
 
 const ViewRecommendations = () => {
-  const [recommendations, setRecommendations] = useState([]);
+  const [recommendations, setRecommendations] = useState({});
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -23,26 +33,53 @@ const ViewRecommendations = () => {
     fetchRecommendations();
   }, []);
 
+  const formatSemesterName = (name) => {
+    const nameParts = name.match(/[A-Za-z]+|[0-9]+/g);
+    if (nameParts) {
+      return `${nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1)} ${
+        nameParts[1]
+      }`;
+    }
+    return name;
+  };
+
   return (
-    <div>
-      <h2>Recommendations</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Course</th>
-            <th>Predicted Success Rate (%)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recommendations.map((recommendation, index) => (
-            <tr key={index}>
-              <td>{recommendation[0].split(/(?=[A-Z0-9])/).join(" ")}</td>
-              <td>{Math.round(recommendation[1] * 100) / 100}</td>
-            </tr>
+    <Box bg="gray.50" minH="100vh" py={12} px={{ base: 4, lg: 8 }}>
+      <Box maxW="md" mx="auto">
+        <Box bg="white" py={8} px={4} shadow="lg" rounded={{ sm: "lg" }}>
+          <Heading mb={6}>Recommendations</Heading>
+          {Object.entries(recommendations).map(([semester, courses], index) => (
+            <Box
+              bg="gray.100"
+              p={4}
+              mt={4}
+              border="1px"
+              borderColor="gray.200"
+              borderRadius="md"
+              key={index}
+            >
+              <VStack align="start" spacing={6}>
+                <Heading size="md">{formatSemesterName(semester)}</Heading>
+                <Table variant="simple" size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Course</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {courses.map((course, index) => (
+                      <Tr key={index}>
+                        <Td>{course.split(/(?=[A-Z0-9])/).join(" ")}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </VStack>
+            </Box>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
