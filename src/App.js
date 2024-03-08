@@ -1,5 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import React, { useEffect, useContext } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+  Outlet,
+} from "react-router-dom";
 import axios from "axios";
 import Register from "./components/Register";
 import Login from "./components/Login";
@@ -9,10 +17,31 @@ import Dashboard from "./components/Dashboard";
 import ViewGrades from "./components/ViewGrades";
 import UpdateGrades from "./components/UpdateGrades";
 import AddGrades from "./components/AddGrades";
+import { UserAuthContext, UserAuthProvider } from "./utils/UserAuthContext";
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+const PrivateRoutes = () => {
+  const { userAuth } = useContext(UserAuthContext);
+
+  if (userAuth === null) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="dashboard" element={<Dashboard />} />
+      <Route path="viewgrades" element={<ViewGrades />} />
+      <Route path="updategrades" element={<UpdateGrades />} />
+      <Route path="addgrades" element={<AddGrades />} />
+      <Route path="recommendations" element={<ViewRecommendations />} />
+      <Route path="entergrades" element={<EnterGrades />} />
+    </Routes>
+  );
+};
+
+const AppContent = () => {
+  const { userAuth, updateUserAuth } = useContext(UserAuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -21,58 +50,34 @@ function App() {
           "http://localhost:4000/user/checksession",
           { withCredentials: true }
         );
-        setIsLoggedIn(response.data.isLoggedIn);
+        if (response.data.user) {
+          updateUserAuth(response.data.user);
+        }
       } catch (error) {
         console.error("Failed to check session", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    checkSession();
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading...</div>; // Or replace with a loading spinner
-  }
+    // Only check session if userAuth is null
+    if (userAuth === null) {
+      checkSession();
+    }
+  }, [updateUserAuth, userAuth]);
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />
-        }
-      />
+      <Route path="/*" element={<PrivateRoutes />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route
-        path="/grades"
-        element={isLoggedIn ? <EnterGrades /> : <Navigate to="/login" />}
-      />
-      <Route
-        path="/recommendations"
-        element={
-          isLoggedIn ? <ViewRecommendations /> : <Navigate to="/login" />
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
-      />
-      <Route
-        path="/viewgrades"
-        element={isLoggedIn ? <ViewGrades /> : <Navigate to="/login" />}
-      />
-      <Route
-        path="/addgrades"
-        element={isLoggedIn ? <AddGrades /> : <Navigate to="/login" />}
-      />
-      <Route
-        path="/updategrades"
-        element={isLoggedIn ? <UpdateGrades /> : <Navigate to="/login" />}
-      />
     </Routes>
+  );
+};
+
+function App() {
+  return (
+    <UserAuthProvider>
+      <AppContent />
+    </UserAuthProvider>
   );
 }
 

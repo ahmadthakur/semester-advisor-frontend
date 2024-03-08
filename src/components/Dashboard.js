@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { UserAuthContext } from "../utils/UserAuthContext";
 import {
   Box,
   Button,
@@ -15,9 +16,12 @@ import {
   VStack,
   Stack,
   Text,
+  Center,
+  Divider,
 } from "@chakra-ui/react";
 
 const Dashboard = () => {
+  const { updateUserAuth } = useContext(UserAuthContext);
   const navigate = useNavigate();
 
   const [grades, setGrades] = useState([]);
@@ -102,6 +106,9 @@ const Dashboard = () => {
             );
         });
 
+        // Update userAuth to null
+        updateUserAuth(null);
+
         navigate("/login");
       } else {
         console.error("Logout failed on the server-side");
@@ -123,7 +130,10 @@ const Dashboard = () => {
     <Box bg="gray.50" minH="100vh" py={12} px={{ base: 4, lg: 8 }}>
       <Box maxW="md" mx="auto">
         <Box bg="white" py={8} px={4} shadow="lg" rounded={{ sm: "lg" }}>
-          <Heading mb={6}>Dashboard</Heading>
+          <Center>
+            <Heading mb={6}>Dashboard</Heading>
+          </Center>
+          <Divider mb={6} />
           <p>Welcome to your dashboard!</p>
 
           {student && (
@@ -143,6 +153,8 @@ const Dashboard = () => {
               </Flex>
             </VStack>
           )}
+
+          <Divider my={6} />
 
           <Heading size="md" mb={4}>
             Your Grades
@@ -176,7 +188,9 @@ const Dashboard = () => {
             </Tbody>
           </Table>
 
-          <Stack spacing={4} mt={6}>
+          <Divider my={6} />
+
+          <Stack direction="row" spacing={4} mt={6}>
             <Button onClick={handleAddOrUpdateGrades} colorScheme="blue">
               {gradesExist ? "Update Grades" : "Add Grades"}
             </Button>

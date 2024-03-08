@@ -8,6 +8,8 @@ import {
   FormLabel,
   Input,
   VStack,
+  Text,
+  Heading,
 } from "@chakra-ui/react";
 
 const Register = () => {
@@ -43,7 +45,16 @@ const Register = () => {
   };
 
   return (
-    <Box bg="gray.50" minH="100vh" py={12} px={{ base: 4, lg: 8 }}>
+    <Box
+      bg="gray.50"
+      minH="100vh"
+      px={{ base: 4, lg: 8 }}
+      py={{ base: 24, lg: 24 }}
+      d="flex"
+    >
+      <Heading mb={6} textAlign="center">
+        Register Here
+      </Heading>
       <Box maxW="md" mx="auto">
         <Box bg="white" py={8} px={4} shadow="lg" rounded={{ sm: "lg" }}>
           <form onSubmit={handleSubmit}>
@@ -53,7 +64,6 @@ const Register = () => {
                 <Input
                   type="text"
                   name="username"
-                  placeholder="Username"
                   onChange={handleChange}
                   required
                 />
@@ -63,7 +73,6 @@ const Register = () => {
                 <Input
                   type="text"
                   name="fullName"
-                  placeholder="Full Name"
                   onChange={handleChange}
                   required
                 />
@@ -73,7 +82,6 @@ const Register = () => {
                 <Input
                   type="email"
                   name="email"
-                  placeholder="Email"
                   onChange={handleChange}
                   required
                 />
@@ -83,7 +91,6 @@ const Register = () => {
                 <Input
                   type="password"
                   name="password"
-                  placeholder="Password"
                   onChange={handleChange}
                   required
                 />
@@ -93,6 +100,12 @@ const Register = () => {
               </Button>
             </VStack>
           </form>
+        </Box>
+        <Box mt={6} textAlign="center">
+          <Text mb={2}>Already have an account?</Text>
+          <Button variant="link" onClick={() => navigate("/login")}>
+            Login Here
+          </Button>
         </Box>
       </Box>
     </Box>
