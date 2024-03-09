@@ -2,6 +2,11 @@
 
 Welcome to the Semester Advisor Frontend repository! This frontend application is designed to provide students with personalized recommendations for their upcoming semesters based on their academic performance and preferences.
 
+The backend of the project can be found at [this link](https://github.com/ahmadthakur/semester-advisor-backend).
+
+![Dashboard Light](./src/assets/dashboard_light.png)
+![Dashboard Dark](./src/assets/dashboard_dark.png)
+
 ## Table of Contents
 
 - [Getting Started](#getting-started)

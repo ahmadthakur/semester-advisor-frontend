@@ -10,10 +10,14 @@ import {
   Thead,
   Tr,
   VStack,
+  SimpleGrid,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 
 const ViewRecommendations = () => {
   const [recommendations, setRecommendations] = useState({});
+
+  const columns = useBreakpointValue({ base: 1, md: 3 });
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -44,41 +48,39 @@ const ViewRecommendations = () => {
   };
 
   return (
-    <Box bg="gray.50" minH="100vh" py={12} px={{ base: 4, lg: 8 }}>
-      <Box maxW="md" mx="auto">
-        <Box bg="white" py={8} px={4} shadow="lg" rounded={{ sm: "lg" }}>
-          <Heading mb={6}>Recommendations</Heading>
-          {Object.entries(recommendations).map(([semester, courses], index) => (
-            <Box
-              bg="gray.100"
-              p={4}
-              mt={4}
-              border="1px"
-              borderColor="gray.200"
-              borderRadius="md"
-              key={index}
-            >
-              <VStack align="start" spacing={6}>
-                <Heading size="md">{formatSemesterName(semester)}</Heading>
-                <Table variant="simple" size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Course</Th>
+    <Box minH="100vh" py={12} px={{ base: 4, lg: 8 }}>
+      <Heading mb={6}>Recommendations</Heading>
+      <SimpleGrid columns={columns} spacing={10}>
+        {Object.entries(recommendations).map(([semester, courses], index) => (
+          <Box
+            bg
+            p={4}
+            mt={4}
+            border="1px"
+            borderColor="gray.200"
+            borderRadius="md"
+            key={index}
+          >
+            <VStack align="start" spacing={6}>
+              <Heading size="md">{formatSemesterName(semester)}</Heading>
+              <Table variant="simple" size="sm">
+                <Thead>
+                  <Tr>
+                    <Th>Course</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {courses.map((course, index) => (
+                    <Tr key={index}>
+                      <Td>{course.split(/(?=[A-Z0-9])/).join(" ")}</Td>
                     </Tr>
-                  </Thead>
-                  <Tbody>
-                    {courses.map((course, index) => (
-                      <Tr key={index}>
-                        <Td>{course.split(/(?=[A-Z0-9])/).join(" ")}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </VStack>
-            </Box>
-          ))}
-        </Box>
-      </Box>
+                  ))}
+                </Tbody>
+              </Table>
+            </VStack>
+          </Box>
+        ))}
+      </SimpleGrid>
     </Box>
   );
 };

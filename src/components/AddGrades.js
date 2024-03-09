@@ -8,9 +8,13 @@ import {
   FormLabel,
   Input,
   VStack,
+  HStack,
+  useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
-const AddGrades = () => {
+const AddGrades = ({ onClose, setRefreshKey }) => {
   const [grades, setGrades] = useState({
     IntroductionToComputing: "",
     IntroductionToProgramming: "",
@@ -20,6 +24,9 @@ const AddGrades = () => {
   });
 
   const navigate = useNavigate();
+  const toast = useToast();
+
+  const color = useColorModeValue("gray.600", "white");
 
   const handleChange = (e) => {
     setGrades({ ...grades, [e.target.name]: parseInt(e.target.value, 10) });
@@ -35,72 +42,130 @@ const AddGrades = () => {
       );
       if (response.data.message) {
         navigate("/dashboard");
+
+        // Show success toast
+        toast({
+          title: "Grades added successfully.",
+          description: "Your grades have been updated.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-right",
+        });
       } else {
         console.error("Failed to add grades", response.data.message);
+
+        // Show error toast
+        toast({
+          title: "Failed to add grades.",
+          description: response.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom-right",
+        });
       }
     } catch (error) {
       console.error("Request to add grades failed", error);
-    }
-  };
 
+      // Show error toast
+      toast({
+        title: "Failed to add grades.",
+        description: "Please check your details and try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
+
+    setRefreshKey((oldKey) => oldKey + 1);
+    onClose();
+  };
   return (
-    <Box bg="gray.50" minH="100vh" py={12} px={{ base: 4, lg: 8 }}>
-      <Box maxW="md" mx="auto">
-        <Box bg="white" py={8} px={4} shadow="lg" rounded={{ sm: "lg" }}>
-          <form onSubmit={handleSubmit}>
-            <VStack spacing={6}>
-              <FormControl id="IntroductionToComputing">
-                <FormLabel>Introduction To Computing grade</FormLabel>
-                <Input
-                  type="number"
-                  name="IntroductionToComputing"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControl id="IntroductionToProgramming">
-                <FormLabel>Introduction To Programming grade</FormLabel>
-                <Input
-                  type="number"
-                  name="IntroductionToProgramming"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControl id="EnglishComprehension">
-                <FormLabel>English Comprehension grade</FormLabel>
-                <Input
-                  type="number"
-                  name="EnglishComprehension"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControl id="CalculusAndAnalyticalGeometry">
-                <FormLabel>Calculus And Analytical Geometry grade</FormLabel>
-                <Input
-                  type="number"
-                  name="CalculusAndAnalyticalGeometry"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              <FormControl id="Physics">
-                <FormLabel>Physics grade</FormLabel>
-                <Input
-                  type="number"
-                  name="Physics"
-                  onChange={handleChange}
-                  required
-                />
-              </FormControl>
-              <Button type="submit" colorScheme="blue" size="lg" fontSize="md">
-                Add Grades
-              </Button>
-            </VStack>
-          </form>
-        </Box>
-      </Box>
+    <Box py={8} px={8}>
+      <form onSubmit={handleSubmit}>
+        <VStack spacing={6}>
+          <FormControl id="IntroductionToComputing">
+            <FormLabel color={color}>Introduction To Computing grade</FormLabel>
+            <Input
+              type="number"
+              name="IntroductionToComputing"
+              onChange={handleChange}
+              min={0}
+              max={100}
+            />
+          </FormControl>
+          <FormControl id="IntroductionToProgramming">
+            <FormLabel color={color}>
+              Introduction To Programming grade
+            </FormLabel>
+            <Input
+              type="number"
+              name="IntroductionToProgramming"
+              onChange={handleChange}
+              min={0}
+              max={100}
+            />
+          </FormControl>
+          <FormControl id="EnglishComprehension">
+            <FormLabel color={color}>English Comprehension grade</FormLabel>
+            <Input
+              type="number"
+              name="EnglishComprehension"
+              onChange={handleChange}
+              min={0}
+              max={100}
+            />
+          </FormControl>
+          <FormControl id="CalculusAndAnalyticalGeometry">
+            <FormLabel color={color}>
+              Calculus And Analytical Geometry grade
+            </FormLabel>
+            <Input
+              type="number"
+              name="CalculusAndAnalyticalGeometry"
+              onChange={handleChange}
+              min={0}
+              max={100}
+            />
+          </FormControl>
+          <FormControl id="Physics">
+            <FormLabel color={color}>Physics grade</FormLabel>
+            <Input
+              type="number"
+              name="Physics"
+              onChange={handleChange}
+              min={0}
+              max={100}
+            />
+          </FormControl>
+          <HStack spacing={4}>
+            <Button
+              leftIcon={<CheckIcon />}
+              variant="outline"
+              colorScheme="green"
+              size="lg"
+              fontSize="md"
+              type="submit"
+              width="full"
+            >
+              Add Grades
+            </Button>
+            <Button
+              leftIcon={<CloseIcon />}
+              variant="outline"
+              colorScheme="red"
+              size="lg"
+              fontSize="md"
+              onClick={onClose}
+              width="full"
+            >
+              Cancel
+            </Button>
+          </HStack>
+        </VStack>
+      </form>
     </Box>
   );
 };

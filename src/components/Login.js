@@ -5,13 +5,16 @@ import { UserAuthContext } from "../utils/UserAuthContext";
 import {
   Box,
   Button,
-  FormControl,
-  FormLabel,
   Input,
   VStack,
   Text,
   Heading,
+  InputLeftElement,
+  InputGroup,
+  Divider,
+  useToast,
 } from "@chakra-ui/react";
+import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +24,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { updateUserAuth } = useContext(UserAuthContext);
+  const toast = useToast();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,14 +48,33 @@ const Login = () => {
 
       // Redirect to the dashboard
       navigate("/dashboard");
+
+      // Show success toast
+      toast({
+        title: "Login successful.",
+        description: "You are now logged in.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
     } catch (error) {
       console.error("Login failed", error);
+
+      // Show error toast
+      toast({
+        title: "Login failed.",
+        description: "Please check your username and password.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
     }
   };
 
   return (
     <Box
-      bg="gray.50"
       minH="100vh"
       px={{ base: 4, lg: 8 }}
       py={{ base: 24, lg: 24 }}
@@ -59,34 +82,52 @@ const Login = () => {
       alignItems="center"
       justifyContent="center"
     >
-      <Heading mb={6} textAlign="center">
-        Sign in to your account
+      <Heading mb={6} textAlign="center" fontWeight="normal">
+        Login to Semestor Advisor
       </Heading>
+      <Box maxW="md" mx="auto">
+        <Divider mb={6} />
+      </Box>
       <Box maxW="md" mx="auto" my="auto">
-        <Box bg="white" py={8} px={4} shadow="lg">
+        <Box py={8} px={4}>
           <form onSubmit={handleSubmit}>
             <VStack spacing={6}>
-              <FormControl id="username">
-                <FormLabel fontWeight="bold">Username</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<AiOutlineUser color="gray.300" />}
+                />
                 <Input
                   type="text"
                   name="username"
+                  placeholder="Username"
                   autoComplete="username"
                   value={formData.username}
                   onChange={handleChange}
                 />
-              </FormControl>
-              <FormControl id="password">
-                <FormLabel fontWeight="bold">Password</FormLabel>
+              </InputGroup>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  children={<AiOutlineLock color="gray.300" />}
+                />
                 <Input
                   type="password"
                   name="password"
+                  placeholder="Password"
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
                 />
-              </FormControl>
-              <Button type="submit" colorScheme="blue" size="lg" fontSize="md">
+              </InputGroup>
+              <Button
+                type="submit"
+                variant="outline"
+                colorScheme="blue"
+                size="lg"
+                fontSize="md"
+                width="full"
+              >
                 Login
               </Button>
             </VStack>
@@ -94,7 +135,11 @@ const Login = () => {
         </Box>
         <Box mt={6} textAlign="center">
           <Text mb={2}>Don't have an account yet?</Text>
-          <Button variant="link" onClick={() => navigate("/register")}>
+          <Button
+            variant="link"
+            color="blue.500"
+            onClick={() => navigate("/register")}
+          >
             Register Now
           </Button>
         </Box>

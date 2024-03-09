@@ -1,13 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-  useLocation,
-  Outlet,
-} from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Register from "./components/Register";
 import Login from "./components/Login";
@@ -18,6 +10,8 @@ import ViewGrades from "./components/ViewGrades";
 import UpdateGrades from "./components/UpdateGrades";
 import AddGrades from "./components/AddGrades";
 import { UserAuthContext, UserAuthProvider } from "./utils/UserAuthContext";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const PrivateRoutes = () => {
   const { userAuth } = useContext(UserAuthContext);
@@ -76,7 +70,9 @@ const AppContent = () => {
 function App() {
   return (
     <UserAuthProvider>
+      <Header />
       <AppContent />
+      <Footer />
     </UserAuthProvider>
   );
 }
